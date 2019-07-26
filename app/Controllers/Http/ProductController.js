@@ -1,5 +1,7 @@
 'use strict'
 
+const Product = use('App/Models/Product')
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -18,6 +20,9 @@ class ProductController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+    const products = Product.all()
+
+    return products
   }
 
   /**
@@ -41,6 +46,11 @@ class ProductController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    const product = await Product.findOrFail(params.id)
+
+    await product.load('images')
+
+    return product
   }
 
   /**
@@ -63,6 +73,9 @@ class ProductController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    const product = await Product.findOrFail(params.id)
+
+    await product.delete()
   }
 }
 
